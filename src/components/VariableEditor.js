@@ -1,6 +1,7 @@
+import { nanoid } from "@reduxjs/toolkit";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { remove, update } from '../redux/variableSlice';
+import { removeVariable, updateVariable } from '../redux/variableSlice';
 
 import GenericButton from "./GenericButton";
 
@@ -12,49 +13,52 @@ const VariableEditor = (props) => {
 
     const [varName, setVarName] = useState(variable.name);
     const [varDesc, setVarDesc] = useState(variable.description);
+    const [alerts, setAlerts] = useState({}); // the alerts object is not an array so as to prevent duplicates
 
-    let alerts = [];
     const saveVariable = () => {
         if (varName) {
-            dispatch(update({ name: varName, description: varDesc, id: props.id }));
+            dispatch(updateVariable({ name: varName, description: varDesc, id: props.id }));
+            setAlerts([]);
         } else {
-            alerts.push(
-                <div className="alert">
-                    You need to name the variable before you can save it.
-                </div>
-            )
+            setAlerts({...alerts, 
+                nameTheVar: (<div className="alert" key={nanoid()}>
+                                You need to name the variable before you can save it.
+                            </div>)
+            });
         }
     }
 
     const deleteVariable = () => {
-        dispatch(remove({ id: props.id }));
+        dispatch(removeVariable({ id: props.id }));
     }
 
     let saveButton;
-    if ((varName != variable.name || varDesc != variable.description) || !varName) {
+    if ((varName !== variable.name || varDesc !== variable.description) || !varName) {
         saveButton = <GenericButton onClick={saveVariable} text="Save Variable" />
     }
 
     return (
-        <section>
-            {alerts}
-            <form className="variableEditor">
+        <section className="VariableEditor">
+            {/* TODO: convert alerts to its own function */}
+            {Object.values(alerts)}
+            <form className="VariableEditor-form">
                 <label>ID: {variable.id}</label><br/>
                 <label>Variable name: </label><br/>
                 <input 
                     type="text" 
                     value={varName}
-                    placeholder={variable.name == "" ? "Y" : ""}
+                    placeholder={variable.name === "" ? "Y" : ""}
                     onChange={e => setVarName(e.target.value)} />
                 <br/>
                 <label>Description: </label><br/>
                 <textarea 
                     type="text" 
                     value={varDesc}
-                    placeholder={variable.name == "" ? "Russia invades Ukraine by ..." : ""}
+                    placeholder={variable.name === "" ? "Russia invades Ukraine by ..." : ""}
                     onChange={e => setVarDesc(e.target.value)} />
             </form>
-            <GenericButton onClick={deleteVariable} text="Delete Variable" />{saveButton}
+            <GenericButton onClick={deleteVariable} text="Delete Variable" />
+            {saveButton}
         </section>
     );
 }

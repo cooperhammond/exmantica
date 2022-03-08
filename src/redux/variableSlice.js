@@ -1,23 +1,24 @@
-import { createSlice, current, nanoid } from "@reduxjs/toolkit";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 
-const initialState = [{id: nanoid(), name: "X", description: "Russia Invades Ukraine"}];
+const initialState = [{id: "INITIAL_VARIABLE_X", name: "Xray", description: "Russia Invades Ukraine in 2022"},
+                      {id: "INITIAL_VARIABLE_Y", name: "Yodel", description: "Putin Is Still President in 2023"}];
 
 export const variableSlice = createSlice({
     name: 'variables',
     initialState: initialState,
     reducers: {
-        create: (state) => {
+        createVariable: (state) => {
             state.push({
                 id: nanoid(),
                 name: "",
                 description: "",
             });
         },
-        remove: (state, action) => {
+        removeVariable: (state, action) => {
             const variable = state.find(variable => variable.id === action.payload.id);
             state = state.splice(state.indexOf(variable), 1)
         },
-        update: (state, action) => {
+        updateVariable: (state, action) => {
             const variable = state.find(variable => variable.id === action.payload.id);
             if (variable) {
                 variable.name = action.payload.name;
@@ -25,8 +26,8 @@ export const variableSlice = createSlice({
             }
         }
     }
-})
+});
 
-export const { create, remove, update } = variableSlice.actions
+export const { createVariable, removeVariable, updateVariable } = variableSlice.actions
 
 export default variableSlice.reducer;

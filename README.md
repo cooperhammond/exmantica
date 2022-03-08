@@ -8,6 +8,7 @@ This project will be an attempt to create a tool for easy use and access of prob
 
 Order of tasks is (very) roughly as follows:
 
+- [x] Creation of variables that can referenced in table creation
 - [ ] Allow creation of multiple boolean variable tables, such as:
   - |X|P(X)|
     |-|-|
